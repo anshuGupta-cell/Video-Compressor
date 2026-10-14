@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Video URL Compressor</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #101827;
+            color: white;
+            padding: 30px 16px;
+        }
+
+        main {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 25px;
+            background: #1e293b;
+            border-radius: 15px;
+        }
+
+        input, button {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 13px;
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+
+        input {
+            border: 1px solid #64748b;
+        }
+
+        button {
+            background: #6366f1;
+            color: white;
+            border: 0;
+            cursor: pointer;
+        }
+
+        a {
+            color: #a5b4fc;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Video Compressor</h1>
+        <p>Paste a direct video URL to convert it to 240p and 30 FPS.</p>
+
+        <form id="form">
+            <input
+                id="url"
+                type="url"
+                placeholder="https://example.com/video.mp4"
+                required
+            >
+
+            <button id="button" type="submit">
+                Compress Video
+            </button>
+        </form>
+
+        <p id="status" role="status"></p>
+        <div id="result"></div>
+    </main>
+
+    <script>
+        const form = document.getElementById("form");
+        const status = document.getElementById("status");
+        const button = document.getElementById("button");
+        const result = document.getElementById("result");
+
+        form.addEventListener("submit", async event => {
+            event.preventDefault();
+
+            status.textContent = "Downloading and compressing video...";
+            result.replaceChildren();
+            button.disabled = true;
+
+            try {
+                const response = await fetch("/compress", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        url: document.getElementById("url").value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Compression failed");
+                }
+
+                status.textContent = data.message;
+
+                const link = document.createElement("a");
+                link.href = data.downloadUrl;
+                link.textContent = "Download compressed video";
+                link.download = "compressed-video.mp4";
+
+                result.appendChild(link);
+            } catch (error) {
+                status.textContent = error.message;
+            } finally {
+                button.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
