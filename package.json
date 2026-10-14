@@ -1,0 +1,22 @@
+{
+  "name": "video-compressor",
+  "version": "1.0.0",
+  "description": "Video compressor using Node.js and FFmpeg",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "video",
+    "compressor",
+    "ffmpeg"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "ffmpeg-static": "^5.2.0"
+  }
+}
